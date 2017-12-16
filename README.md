@@ -1,17 +1,17 @@
 package dispatcher // import "."
 
-type Worker interface {
-	Init(id int)
-	Proc(interface{})
-}
+type Worker interface {  
+	Init(id int)  
+	Proc(interface{})  
+}  
 
-type WorkerFunc func(id int) Worker
+type WorkerFunc func(id int) Worker  
 
-func NewDispatcher(queues, works int, wf WorkerFunc) (*Dispatcher, error)
+func NewDispatcher(queues, works int, wf WorkerFunc) (*Dispatcher, error)  
 
-func (d *Dispatcher) Start()
-func (d *Dispatcher) Add(v interface{})
-func (d *Dispatcher) Wait()
+func (d *Dispatcher) Start()  
+func (d *Dispatcher) Add(v interface{})  
+func (d *Dispatcher) Wait()  
 
 
 example
