@@ -16,13 +16,15 @@ func (d *Dispatcher) Wait()
 
 example
 ```
+package main
+
 import (
     "fmt"
 	"github.com/akitanoyo/dispatcher"
 )
 
 type MyWorker struct {
-    Worker
+    dispatcher.Worker
 
     // user members
     id int
@@ -39,12 +41,12 @@ func (w *MyWorker) Proc(v interface{}) {
 
 func main() {
     // queue 100, workers 5
-    d, err := NewDispatcher(100, 5, func(id int) Worker {
+    d, err := dispatcher.NewDispatcher(100, 5, func(id int) dispatcher.Worker {
         w := &MyWorker{}
         return w
     })
     if err != nil {
-        t.Errorf("%v\n", err)
+        panic(err)
     }
 
     d.Start()
