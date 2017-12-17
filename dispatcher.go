@@ -11,16 +11,13 @@ type Worker interface {
     Proc(interface{})
 }
 
-// type WorkerT struct {
-//     Worker
-// }
-
 type Dispatcher struct {
     queue   chan interface{}
+    quit    []chan bool
     workers []Worker
     wg      sync.WaitGroup
+    stop    bool
 }
-
 
 type WorkerFunc func(id int) Worker
 
@@ -36,7 +33,7 @@ func NewDispatcher(queues, works int, wf WorkerFunc) (*Dispatcher, error) {
         w := wf(i)
         w.(Worker).Init(i)
         d.workers = append(d.workers, w)
-        // fmt.Println(w)
+        d.quit = append(d.quit, make(chan bool))
     }
     return d, nil
 }
@@ -49,6 +46,8 @@ func (d *Dispatcher) Start() {
                 case v := <- d.queue:
                     w.(Worker).Proc(v)
                     d.wg.Done()
+                case <- d.quit[n]:
+                    return
                 }
             }
         }(n, w)
@@ -61,5 +60,16 @@ func (d *Dispatcher) Add(v interface{}) {
 }
 
 func (d *Dispatcher) Wait() {
-    d.wg.Wait()
+    if !d.stop {
+        d.wg.Wait()
+    }
+}
+
+func (d *Dispatcher) Stop() {
+    d.stop = true
+    for i, _ := range d.quit {
+        go func(ii int) {
+            d.quit[ii] <- true
+        }(i)
+    }
 }

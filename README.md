@@ -1,4 +1,4 @@
-package dispatcher // import "."
+package dispatcher
 
 type Worker interface {  
 	Init(id int)  
@@ -11,6 +11,7 @@ func NewDispatcher(queues, works int, wf WorkerFunc) (*Dispatcher, error)
 
 func (d *Dispatcher) Start()  
 func (d *Dispatcher) Add(v interface{})  
+func (d *Dispatcher) Stop()  
 func (d *Dispatcher) Wait()  
 
 
