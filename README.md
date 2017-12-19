@@ -24,7 +24,7 @@ package main
 
 import (
     "fmt"
-	"github.com/akitanoyo/dispatcher"
+    "github.com/akitanoyo/dispatcher"
 )
 
 type MyWorker struct {
@@ -39,9 +39,9 @@ func (w *MyWorker) Init(id int) {
     w.id = id
 }
 
-func (w *MyWorker) Proc(v interface{}) {
+func (w *MyWorker) Proc(v interface{}) interface{} {
     fmt.Printf("test Proc(%d) %v\n", w.id, v)
-	return nil
+    return nil
 }
 
 func main() {
@@ -62,6 +62,6 @@ func main() {
     }
 
     d.Wait()
-	d.Close()
+    d.Close()
 }
 ```
