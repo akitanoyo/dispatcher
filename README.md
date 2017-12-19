@@ -2,7 +2,7 @@ package dispatcher
 
 type Worker interface {  
 	Init(id int)  
-	Proc(interface{})  
+	Proc(interface{}) interface{}  
 }  
 
 type WorkerFunc func(id int) Worker  
@@ -11,8 +11,11 @@ func NewDispatcher(queues, works int, wf WorkerFunc) (*Dispatcher, error)
 
 func (d *Dispatcher) Start()  
 func (d *Dispatcher) Add(v interface{})  
-func (d *Dispatcher) Stop()  
 func (d *Dispatcher) Wait()  
+func (d *Dispatcher) Close()  
+
+type ResultFunc func(v interface{}) error  
+func (d *Dispatcher) ResultWait(rsf ResultFunc)  
 
 
 example
@@ -38,6 +41,7 @@ func (w *MyWorker) Init(id int) {
 
 func (w *MyWorker) Proc(v interface{}) {
     fmt.Printf("test Proc(%d) %v\n", w.id, v)
+	return nil
 }
 
 func main() {
@@ -58,5 +62,6 @@ func main() {
     }
 
     d.Wait()
+	d.Close()
 }
 ```
